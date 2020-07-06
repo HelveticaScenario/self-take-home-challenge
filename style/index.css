@@ -1,2 +1,76 @@
 /* ensure all pages have Bootstrap CSS */
 @import '~bootstrap/dist/css/bootstrap.min.css';
+
+:root {
+  --dark-gray: #1b1b1b;
+  --light-gray: #eaeaea;
+  --lighter-gray: #f2f2f1;
+  --off-white: #f7f7f7;
+  --blue: #8f8bef;
+}
+
+html,
+body {
+  background: var(--off-white);
+}
+
+.navbar.bg-dark .nav-link {
+  color: var(--blue);
+  font-weight: bold;
+}
+
+.blue {
+  color: var(--blue);
+}
+
+.dark-gray {
+  color: var(--dark-gray);
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.card.bg-dark {
+  border-radius: 0;
+  margin-top: 1em;
+}
+
+.form-control {
+  border-radius: 0;
+}
+
+.autocomplete {
+  /*the container must be positioned relative:*/
+  position: relative;
+  display: inline-block;
+}
+
+.autocomplete-items {
+  position: absolute;
+  z-index: 99;
+  /*position the autocomplete items to be the same width as the container:*/
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: var(--light-gray);
+  list-style-type: none;
+  border-radius: 0;
+  max-height: 75vh;
+  overflow: auto;
+}
+
+.autocomplete-items .list-group-item {
+  border: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 0.1em var(--off-white) solid;
+  background-color: var(--light-gray);
+}
+
+.icon-button {
+    padding: 0;
+    border: 0;
+    background: transparent;
+}
