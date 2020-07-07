@@ -27,7 +27,7 @@ const Home: NextPage = () => {
         </Navbar.Collapse>
       </Navbar>
       <Container>
-        <AddLocation />
+        <AddLocation onAdd={() => {}} />
       </Container>
     </>
   )
