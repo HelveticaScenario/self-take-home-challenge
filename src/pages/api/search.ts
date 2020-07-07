@@ -38,13 +38,10 @@ const handler = async (
     const { query } = queryString.parseUrl(req.url || '/', {
       parseNumbers: true,
     })
-    console.log(query)
     if (SearchRequestSchema.check(query)) {
       const { search_text: searchText } = query
       if (searchText) {
         const aaa = (await axios.get(makeSearchEndpoint(searchText))).data
-        console.log(aaa)
-        console.log(aaa.features[0])
         const { features: places } = MapboxGeocodingResponseSchema.parse(aaa)
         const placesWithWeather: ISearchResponse = await Promise.all(
           places.map(async (place) => {

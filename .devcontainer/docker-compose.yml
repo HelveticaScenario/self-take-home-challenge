@@ -13,21 +13,21 @@ services:
     # user if not 1000. See https://aka.ms/vscode-remote/containers/non-root for details.
     # user: node
 
-    build: 
+    build:
       context: .
       dockerfile: Dockerfile
       args:
         VARIANT: 12
-  
+
     volumes:
       - ..:/workspace:cached
 
     # Overrides default command so things don't shut down after the process ends.
     command: sleep infinity
-    ports: 
-      3000:3000
-    
-    links:
+    ports:
+      - 3000:3000
+
+    depends_on:
       - mongo
 
   mongo:
@@ -35,4 +35,5 @@ services:
     restart: unless-stopped
     volumes:
       - /data/db
- 
+    ports:
+      - 27017:27017

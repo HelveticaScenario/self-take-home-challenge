@@ -37,6 +37,13 @@ export const ReverseSearchResponseSchema = z.object({
 
 export type IReverseSearchResponse = z.infer<typeof ReverseSearchResponseSchema>
 
+export const SignUpSchema = z.object({
+  email: z.string(),
+  password: z.string(),
+})
+
+export type ISignUp = z.infer<typeof SignUpSchema>
+
 const PropertiesSchema = z
   .object({
     accuracy: z
@@ -59,12 +66,14 @@ const PropertiesSchema = z
   })
   .partial()
 
-const GeometrySchema = z.object({
-  type: z.literal('Point'),
-  coordinates: z.tuple([z.number(), z.number()]),
-  // interpolated: z.boolean().optional(),
-  // omitted: z.boolean().optional(),
-}).nonstrict()
+const GeometrySchema = z
+  .object({
+    type: z.literal('Point'),
+    coordinates: z.tuple([z.number(), z.number()]),
+    // interpolated: z.boolean().optional(),
+    // omitted: z.boolean().optional(),
+  })
+  .nonstrict()
 
 const FeaturesSchema = z
   .object({
