@@ -1,6 +1,6 @@
 // import crypto from 'crypto'
 import bcrypt from 'bcryptjs'
-import { User, connectDB, IUser } from './database'
+import { User, connectDB, IUserDoc } from './database'
 
 /**
  * User methods. The example doesn't contain a DB, but for real applications you must use a
@@ -10,18 +10,19 @@ import { User, connectDB, IUser } from './database'
 export const createUser = async (
   email: string,
   password: string
-): Promise<IUser> => {
+): Promise<IUserDoc> => {
   await connectDB()
   return User.create({
     email,
     password: bcrypt.hashSync(password, bcrypt.genSaltSync(8)),
+    cities: [],
   })
 }
 
 export const findUser = async (
   email: string,
   password: string
-): Promise<IUser | null> => {
+): Promise<IUserDoc | null> => {
   // Here you should lookup for the user in your DB and compare the password:
   //
   // const user = await DB.findUser(...)

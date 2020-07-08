@@ -9,10 +9,9 @@ const authenticate = (
   method: string,
   req: NextApiRequest,
   res: NextApiResponse
-): Promise<Record<string, unknown>> =>
+): Promise<string> =>
   new Promise((resolve, reject) => {
     passport.authenticate(method, { session: false }, (error, token) => {
-      console.log('mnbcnmxbcmbnv', error, token)
       if (error) {
         reject(error)
       } else {
@@ -27,12 +26,12 @@ export default nextConnect<NextApiRequest, NextApiResponse>()
   .use(passport.initialize())
   .post(async (req, res) => {
     try {
-      const user = await authenticate('local', req, res)
-      if (!user) {
+      const userId = await authenticate('local', req, res)
+      if (!userId) {
         throw new Error()
       }
       // session is the payload to save in the token, it may contain basic info about the user
-      const session = { ...user }
+      const session = { userId }
       // The token is a string with the encrypted session
       const token = await encryptSession(session)
 

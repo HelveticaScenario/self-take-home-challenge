@@ -70,7 +70,21 @@ body {
 }
 
 .icon-button {
-    padding: 0;
-    border: 0;
-    background: transparent;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.weather-card {
+  margin-top: 1em;
+  position: relative;
+}
+
+.weather-card .close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 0.4em;
+  font-size: 0.7em;
+  opacity: 1;
 }

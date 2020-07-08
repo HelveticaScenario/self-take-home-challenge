@@ -9,7 +9,7 @@ export const localStrategy = new Local.Strategy(
   (email, password, done) => {
     findUser(email, password)
       .then((user) => {
-        done(null, user)
+        done(null, user?.id)
       })
       .catch((error) => {
         done(error)

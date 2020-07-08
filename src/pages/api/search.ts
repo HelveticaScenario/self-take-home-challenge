@@ -5,18 +5,10 @@ import axios from 'axios'
 import {
   SearchRequestSchema,
   MapboxGeocodingResponseSchema,
-  OpenWeatherResponseSchema,
   ISearchResponse,
 } from '../../schemas/api'
 import { makeEndpoint } from '../../lib/utils'
-
-const makeWeatherEndpoint = (lon: number, lat: number) =>
-  makeEndpoint(`https://api.openweathermap.org/data/2.5/onecall`, {
-    lat,
-    lon,
-    appid: process.env.OPEN_WEATHER_APP_ID,
-    exclude: 'minutely,hourly,daily',
-  })
+import { getWeather } from '../../lib/getWeather'
 
 const makeSearchEndpoint = (searchTerm: string) =>
   makeEndpoint(
@@ -46,43 +38,42 @@ const handler = async (
         const placesWithWeather: ISearchResponse = await Promise.all(
           places.map(async (place) => {
             const {
-              current: {
-                temp,
-                weather: [currentWeather],
+              weather: { temp, main, description, icon },
+            } = await getWeather({
+              name: place.place_name,
+              coordinates: {
+                lon: place.geometry.coordinates[0],
+                lat: place.geometry.coordinates[1],
               },
-            } = OpenWeatherResponseSchema.parse(
-              (
-                await axios.get(
-                  makeWeatherEndpoint(...place.geometry.coordinates)
-                )
-              ).data
-            )
+            })
 
             return {
               weather: {
                 temp,
-                main: currentWeather.main,
-                description: currentWeather.description,
-                icon: currentWeather.icon,
+                main,
+                description,
+                icon,
               },
               location: {
                 name: place.place_name,
+                coordinates: {
+                  lon: place.geometry.coordinates[0],
+                  lat: place.geometry.coordinates[1],
+                },
               },
             }
           })
         )
 
-        res.statusCode = 200
-        res.json(placesWithWeather)
+        res.status(200).json(placesWithWeather)
       } else {
-        res.statusCode = 200
-        res.json([])
+        res.status(200).json([])
       }
     } else {
-      res.statusCode = 400
+      res.status(400).end()
     }
   } catch (e) {
-    res.statusCode = 500
+    res.status(500).end()
     console.error(e)
   }
 }
