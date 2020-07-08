@@ -88,3 +88,34 @@ body {
   font-size: 0.7em;
   opacity: 1;
 }
+
+.auth-page {
+  padding-top: 10em;
+  height: 100vh;
+  width: 100vw;
+  background-color: var(--dark-gray);
+  color: var(--off-white);
+}
+
+.auth-page header {
+  margin-bottom: 1em;
+}
+
+.auth-page .form-label {
+  color: var(--blue);
+  margin-bottom: 0.5em;
+  font-weight: bold;
+}
+
+.auth-page .form-control {
+  margin-bottom: 0.5em;
+}
+
+.auth-page button {
+  border-radius: 2em;
+}
+
+.auth-page .form-text {
+  margin-top: 2em;
+  margin-bottom: 1em;
+}

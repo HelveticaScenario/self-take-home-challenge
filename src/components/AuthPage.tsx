@@ -6,6 +6,7 @@ import {
   Button,
   FormControl,
   Alert,
+  Form,
 } from 'react-bootstrap'
 
 export enum AuthPageMode {
@@ -59,57 +60,57 @@ const AuthPage: FC<AuthPageProps> = ({
   const [password, setPassword] = useState('')
 
   return (
-    <Container>
-      {error && (
-        <Alert variant="danger" dismissible>
-          <Alert.Heading>{error}</Alert.Heading>
-        </Alert>
-      )}
+    <div className="auth-page">
+      <Container>
+        {error && (
+          <Alert variant="danger" dismissible>
+            <Alert.Heading>{error}</Alert.Heading>
+          </Alert>
+        )}
 
-      <Row>
-        <Col>
-          <h1>My Weather</h1>
-          {copy[mode] != null && <h5>{copy[mode].subHeader}</h5>}
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <div>{copy[mode].emailLabel}</div>
-          <FormControl
-            type="text"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <div>{copy[mode].passwordLabel}</div>
-          <FormControl
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <Button
-            onClick={() => {
-              onSubmit(email, password)
-            }}
-          >
+        <Row as="header">
+          <Col>
+            <h1>My Weather</h1>
+            {copy[mode] != null && <h5>{copy[mode].subHeader}</h5>}
+          </Col>
+        </Row>
+        <Form
+          onSubmit={(e: { preventDefault: () => void }) => {
+            e.preventDefault()
+            onSubmit(email, password)
+          }}
+        >
+          <Form.Group>
+            <Form.Label>{copy[mode].emailLabel}</Form.Label>
+            <Form.Control
+              type="text"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </Form.Group>
+          <Form.Group>
+            <Form.Label>{copy[mode].passwordLabel}</Form.Label>
+            <FormControl
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </Form.Group>
+          <Button size="lg" block variant="primary" type="submit">
             {copy[mode].primaryButton}
           </Button>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <div>{copy[mode].modeChangeLabel}</div>
-          <Button onClick={onToggleMode}>{copy[mode].modeChange}</Button>
-        </Col>
-      </Row>
-    </Container>
+          <Form.Text>{copy[mode].modeChangeLabel}</Form.Text>
+          <Button
+            size="lg"
+            block
+            variant="outline-primary"
+            onClick={onToggleMode}
+          >
+            {copy[mode].modeChange}
+          </Button>
+        </Form>
+      </Container>
+    </div>
   )
 }
 
