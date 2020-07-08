@@ -1,4 +1,4 @@
-import { FC, useState, useCallback, useRef } from 'react'
+import { FC, useState, useCallback, useRef, useEffect } from 'react'
 import { FaSearch, FaPlus, FaLocationArrow } from 'react-icons/fa'
 import {
   Button,
@@ -10,7 +10,6 @@ import {
   Spinner,
 } from 'react-bootstrap'
 import debounce from 'lodash/debounce'
-import axios from 'axios'
 import {
   IPlaceWithWeather,
   ISearchResponse,
@@ -47,45 +46,60 @@ const AutocompleteItem: FC<AutocompleteItemProps> = ({ item, onAdd }) => (
   </ListGroupItem>
 )
 
+const ADD_LOCATION_ID = 'add-location'
+
 interface AddLocationProps {
   onAdd: (place: IPlaceWithWeather) => void
 }
 export const AddLocation: FC<AddLocationProps> = ({ onAdd }) => {
-  const [autocompleteResults, updateAutocompleteResults] = useState<
+  const [autocompleteResults, setAutocompleteResults] = useState<
     Immutable<ISearchResponse>
   >([])
-  const [loadingResults, updateLoadingResults] = useState(false)
-  const [loadingCurrentLocation, updateLoadingCurrentLocation] = useState(false)
+  const [loadingResults, setLoadingResults] = useState(false)
+  const [loadingCurrentLocation, setLoadingCurrentLocation] = useState(false)
   const searchTimestampRef = useRef<number>(0)
-  const [searchText, updateSearchText] = useState('')
+  const [searchText, setSearchText] = useState('')
+
+  useEffect(() => {
+    window.addEventListener('click', ({ target }) => {
+      if (
+        !(target instanceof Element) ||
+        target.id === ADD_LOCATION_ID ||
+        document.getElementById(ADD_LOCATION_ID)?.contains(target)
+      ) {
+        return
+      }
+
+      setAutocompleteResults([])
+    })
+  })
+
   const search = useCallback(
     debounce(
       async (newSearchText: string) => {
-        updateLoadingResults(true)
+        setLoadingResults(true)
         const timestamp = performance.now()
         searchTimestampRef.current = timestamp
         const response = SearchResponseSchema.parse(
-          (
-            await axios.get(
-              makeEndpoint<ISearchRequest>(`/api/search`, {
-                search_text: newSearchText,
-              })
-            )
-          ).data
+          await fetch(
+            makeEndpoint<ISearchRequest>(`/api/search`, {
+              search_text: newSearchText,
+            })
+          ).then((res) => res.json())
         )
         if (searchTimestampRef.current === timestamp) {
-          updateAutocompleteResults(response)
-          updateLoadingResults(false)
+          setAutocompleteResults(response)
+          setLoadingResults(false)
         }
       },
       300,
       { leading: false, trailing: true }
     ),
-    [updateAutocompleteResults, updateLoadingResults]
+    [setAutocompleteResults, setLoadingResults]
   )
 
   const onChange = (newSearchText: string) => {
-    updateSearchText(newSearchText)
+    setSearchText(newSearchText)
     search(newSearchText)
   }
 
@@ -95,21 +109,19 @@ export const AddLocation: FC<AddLocationProps> = ({ onAdd }) => {
     }
     navigator.geolocation.getCurrentPosition(
       async (position) => {
-        updateLoadingCurrentLocation(true)
+        setLoadingCurrentLocation(true)
         const { name } = ReverseSearchResponseSchema.parse(
-          await (
-            await axios.get(
-              makeEndpoint<IReverseSearchRequest>(`/api/reverse-search`, {
-                lon: position.coords.longitude,
-                lat: position.coords.latitude,
-              })
-            )
-          ).data
+          await await fetch(
+            makeEndpoint<IReverseSearchRequest>(`/api/reverseSearch`, {
+              lon: position.coords.longitude,
+              lat: position.coords.latitude,
+            })
+          ).then((res) => res.json())
         )
         if (name) {
           onChange(name)
         }
-        updateLoadingCurrentLocation(false)
+        setLoadingCurrentLocation(false)
       },
       (error) => {
         console.error(error)
@@ -118,7 +130,7 @@ export const AddLocation: FC<AddLocationProps> = ({ onAdd }) => {
   }
 
   return (
-    <Card bg="dark" text="light">
+    <Card bg="dark" text="light" id={ADD_LOCATION_ID}>
       <Card.Body>
         <Card.Title className="d-flex justify-content-between blue">
           <span>ADD A LOCATION</span>
@@ -132,7 +144,10 @@ export const AddLocation: FC<AddLocationProps> = ({ onAdd }) => {
             onChange={(e) => onChange(e.target.value)}
           ></FormControl>
           <InputGroup.Append>
-            <Button disabled={loadingResults || loadingCurrentLocation}>
+            <Button
+              disabled={loadingResults || loadingCurrentLocation}
+              onClick={() => search(searchText)}
+            >
               {loadingResults || loadingCurrentLocation ? (
                 <Spinner
                   as="span"
