@@ -30,19 +30,17 @@ const formatWeather = (weather: IPlaceWithWeather['weather']) =>
   `${weather.description}, ${Math.round(kelvinToFahrenheit(weather.temp))}° F`
 
 const AutocompleteItem: FC<AutocompleteItemProps> = ({ item, onAdd }) => (
-  <ListGroupItem>
-    <div>
+  <ListGroupItem
+    as="button"
+    onClick={() => {
+      onAdd(item)
+    }}
+  >
+    <div className="name-and-weather">
       <div className="blue bold">{item.location.name}</div>
       <div className="dark-gray">{formatWeather(item.weather)}</div>
     </div>
-    <button
-      className="icon-button blue"
-      onClick={() => {
-        onAdd(item)
-      }}
-    >
-      <FaPlus />
-    </button>
+    <FaPlus />
   </ListGroupItem>
 )
 

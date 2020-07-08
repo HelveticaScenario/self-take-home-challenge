@@ -69,10 +69,10 @@ body {
   background-color: var(--light-gray);
 }
 
-.icon-button {
-  padding: 0;
-  border: 0;
-  background: transparent;
+.autocomplete-items .list-group-item .name-and-weather {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
 }
 
 .weather-card {
