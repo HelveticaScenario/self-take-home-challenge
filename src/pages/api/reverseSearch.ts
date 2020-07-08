@@ -37,13 +37,12 @@ const handler = async (
       const response: IReverseSearchResponse = {
         name: place ? place.place_name : undefined,
       }
-      res.json(response)
-      res.statusCode = 200
+      res.status(200).json(response)
     } else {
-      res.statusCode = 400
+      res.status(400).end()
     }
   } catch (e) {
-    res.statusCode = 500
+    res.status(500).end()
     console.error(e)
   }
 }

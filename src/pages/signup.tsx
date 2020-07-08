@@ -8,14 +8,14 @@ import { useUser } from '../lib/hooks'
 const SignUpPage: NextPage = () => {
   useUser({ redirectTo: '/', redirectIfFound: true })
   const [errorMsg, setErrorMsg] = useState('')
-  const [signingUp, updateSigningUp] = useState(false)
+  const [signingUp, setSigningUp] = useState(false)
   const signUp = async (email: string, password: string) => {
     try {
       if (errorMsg) {
         setErrorMsg('')
       }
 
-      updateSigningUp(true)
+      setSigningUp(true)
       const res = await fetch('/api/signup', {
         headers: {
           'Content-Type': 'application/json',
@@ -35,7 +35,7 @@ const SignUpPage: NextPage = () => {
       console.error('An unexpected error happened occurred:', error)
       setErrorMsg(error.message)
     } finally {
-      updateSigningUp(false)
+      setSigningUp(false)
     }
   }
 

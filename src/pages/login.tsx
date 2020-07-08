@@ -3,6 +3,7 @@ import Router from 'next/router'
 import AuthPage, { AuthPageMode } from '../components/AuthPage'
 import { useState } from 'react'
 import { useUser } from '../lib/hooks'
+import { validateEmailAddress } from '../lib/utils'
 
 const LoginPage: NextPage = () => {
   useUser({ redirectTo: '/', redirectIfFound: true })
@@ -10,6 +11,16 @@ const LoginPage: NextPage = () => {
 
   const handleSubmit = async (email: string, password: string) => {
     if (errorMsg) setErrorMsg('')
+
+    if (!validateEmailAddress(email)) {
+      setErrorMsg('Please enter a valid email.')
+      return
+    }
+
+    if (!password) {
+      setErrorMsg('Please enter a password.')
+      return
+    }
 
     const body = {
       email,
@@ -24,6 +35,8 @@ const LoginPage: NextPage = () => {
       })
       if (res.status === 200) {
         Router.push('/')
+      } else if (res.status === 401) {
+        setErrorMsg('The email and password combination was not valid.')
       } else {
         throw new Error(await res.text())
       }
@@ -40,6 +53,7 @@ const LoginPage: NextPage = () => {
         Router.push('/signup')
       }}
       onSubmit={handleSubmit}
+      error={errorMsg}
     />
   )
 }

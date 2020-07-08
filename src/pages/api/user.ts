@@ -7,10 +7,9 @@ export default async (
 ): Promise<void> => {
   try {
     const session = await getSession(req)
-    console.log(session)
     res.status(200).json({ exists: session != null })
   } catch (e) {
-    res.statusMessage = e.message || e
+    console.error(e)
     res.status(400).end(res.statusMessage)
   }
 }

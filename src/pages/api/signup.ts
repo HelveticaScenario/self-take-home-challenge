@@ -21,7 +21,7 @@ const handler = async (
       }
     }
   } catch (e) {
-    res.status(500).json({ error: e.message || 'something went wrong' })
+    res.status(500).end(e.message || e)
   }
 }
 

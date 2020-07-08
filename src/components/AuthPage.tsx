@@ -5,8 +5,8 @@ import {
   Col,
   Button,
   FormControl,
+  Alert,
 } from 'react-bootstrap'
-
 
 export enum AuthPageMode {
   Login,
@@ -47,60 +47,69 @@ export interface AuthPageProps {
   mode: AuthPageMode
   onToggleMode: () => void
   onSubmit: (email: string, password: string) => void
+  error?: string
 }
-const AuthPage: FC<AuthPageProps> = ({ mode, onToggleMode, onSubmit }) => {
-  const [email, updateEmail] = useState('')
-  const [password, updatePassword] = useState('')
+const AuthPage: FC<AuthPageProps> = ({
+  mode,
+  onToggleMode,
+  onSubmit,
+  error,
+}) => {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
 
   return (
-    <>
-      <Container>
-        <Row>
-          <Col>
-            <h1>My Weather</h1>
-            {copy[mode] != null && <h5>{copy[mode].subHeader}</h5>}
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <div>{copy[mode].emailLabel}</div>
-            <FormControl
-              type="text"
-              value={email}
-              onChange={(e) => updateEmail(e.target.value)}
-            />
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <div>{copy[mode].passwordLabel}</div>
-            <FormControl
-              type="password"
-              value={password}
-              onChange={(e) => updatePassword(e.target.value)}
-            />
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <Button
-              onClick={() => {
-                onSubmit(email, password)
-              }}
-            >
-              {copy[mode].primaryButton}
-            </Button>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <div>{copy[mode].modeChangeLabel}</div>
-            <Button onClick={onToggleMode}>{copy[mode].modeChange}</Button>
-          </Col>
-        </Row>
-      </Container>
-      
-    </>
+    <Container>
+      {error && (
+        <Alert variant="danger" dismissible>
+          <Alert.Heading>{error}</Alert.Heading>
+        </Alert>
+      )}
+
+      <Row>
+        <Col>
+          <h1>My Weather</h1>
+          {copy[mode] != null && <h5>{copy[mode].subHeader}</h5>}
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <div>{copy[mode].emailLabel}</div>
+          <FormControl
+            type="text"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <div>{copy[mode].passwordLabel}</div>
+          <FormControl
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <Button
+            onClick={() => {
+              onSubmit(email, password)
+            }}
+          >
+            {copy[mode].primaryButton}
+          </Button>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <div>{copy[mode].modeChangeLabel}</div>
+          <Button onClick={onToggleMode}>{copy[mode].modeChange}</Button>
+        </Col>
+      </Row>
+    </Container>
   )
 }
 

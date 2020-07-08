@@ -1,4 +1,4 @@
-import queryString  from 'query-string'
+import queryString from 'query-string'
 
 export const kelvinToFahrenheit = (kelvin: number): number =>
   ((kelvin - 273.15) * 9) / 5 + 32
@@ -21,3 +21,6 @@ export type Immutable<T> = T extends  // eslint-disable-next-line @typescript-es
 
 export const makeEndpoint = <T>(url: string, query: T): string =>
   `${url}?${queryString.stringify(query)}`
+
+export const validateEmailAddress = (address: string): boolean =>
+  /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(address)
