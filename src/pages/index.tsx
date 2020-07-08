@@ -16,15 +16,16 @@ import { Immutable } from '../lib/utils'
 import WeatherCard from '../components/WeatherCard'
 
 const Home: NextPage = () => {
-  useUser({ redirectTo: '/login' })
+  const { finished, hasUser } = useUser({ redirectTo: '/login' })
   const [errorMsg, setErrorMsg] = useState('')
   const [cities, setCities] = useState<Immutable<ICity[]>>([])
-  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     let canceled = false
     const fetchWeather = async () => {
-      setLoading(true)
+      if (!finished || !hasUser) {
+        return
+      }
       try {
         const { cities } = WeatherResponseSchema.parse(
           await fetch('/api/weather').then((res) => res.json())
@@ -34,17 +35,13 @@ const Home: NextPage = () => {
         }
       } catch (error) {
         console.error('An unexpected error happened occurred:', error)
-      } finally {
-        if (!canceled) {
-          setLoading(false)
-        }
       }
     }
     fetchWeather()
     return () => {
       canceled = true
     }
-  }, [])
+  }, [finished, hasUser])
 
   const addCity = async (location: IPostCityRequest) => {
     if (errorMsg) setErrorMsg('')

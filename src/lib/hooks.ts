@@ -1,6 +1,5 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import Router from 'next/router'
-import useSWR from 'swr'
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json())
 
@@ -10,10 +9,22 @@ export const useUser = ({
 }: {
   redirectTo?: string
   redirectIfFound?: boolean
-} = {}): any => {
-  const { data, error } = useSWR('/api/user', fetcher)
-  const exists = data?.exists
-  const finished = Boolean(data)
+} = {}): { finished: boolean; hasUser: boolean } => {
+  const [error, setError] = useState<any>()
+  const [value, setValue] = useState<any>()
+  const [pending, setPending] = useState(true)
+  useEffect(() => {
+    let cancel = false
+    fetcher('/api/user')
+      .then((response: any) => !cancel && setValue(response))
+      .catch((error: any) => setError(error))
+      .finally(() => setPending(false))
+    return () => {
+      cancel = true
+    }
+  }, [])
+  const exists = value?.exists
+  const finished = Boolean(!pending)
   const hasUser = Boolean(exists)
   if (error) {
     console.error(error)
@@ -30,4 +41,5 @@ export const useUser = ({
       Router.push(redirectTo)
     }
   }, [redirectTo, redirectIfFound, finished, hasUser])
+  return { finished, hasUser }
 }
