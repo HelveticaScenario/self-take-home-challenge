@@ -7,7 +7,7 @@ import {
   ReverseSearchRequestSchema,
   IReverseSearchResponse,
 } from '../../schemas/api'
-import { makeEndpoint } from '../../utils'
+import { makeEndpoint } from '../../lib/utils'
 
 const makeReverseSearchEndpoint = (lon: number, lat: number) =>
   makeEndpoint(

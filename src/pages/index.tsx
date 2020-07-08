@@ -1,11 +1,11 @@
 import Head from 'next/head'
 import { NextPage } from 'next'
 import { Container, Navbar, Nav } from 'react-bootstrap'
-import { useRouter } from 'next/router'
 import { AddLocation } from '../components/AddLocation'
+import { useUser } from '../lib/hooks'
 
 const Home: NextPage = () => {
-  const router = useRouter()
+  useUser({ redirectTo: '/login' })
   return (
     <>
       <Head>
@@ -16,13 +16,7 @@ const Home: NextPage = () => {
         <Navbar.Collapse>
           <Nav className="mr-auto" />
           <Nav>
-            <Nav.Link
-              onClick={() => {
-                router.push('/login')
-              }}
-            >
-              LOG OUT
-            </Nav.Link>
+            <Nav.Link href="/api/logout">LOG OUT</Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Navbar>

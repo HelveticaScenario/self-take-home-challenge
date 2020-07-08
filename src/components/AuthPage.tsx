@@ -5,10 +5,8 @@ import {
   Col,
   Button,
   FormControl,
-  Spinner,
 } from 'react-bootstrap'
-import { signin } from 'next-auth/client'
-import { update } from 'lodash'
+
 
 export enum AuthPageMode {
   Login,
@@ -48,31 +46,12 @@ const copy: CopyObj = {
 export interface AuthPageProps {
   mode: AuthPageMode
   onToggleMode: () => void
-  onSubmit: () => void
+  onSubmit: (email: string, password: string) => void
 }
 const AuthPage: FC<AuthPageProps> = ({ mode, onToggleMode, onSubmit }) => {
   const [email, updateEmail] = useState('')
   const [password, updatePassword] = useState('')
-  const [signingUp, updateSigningUp] = useState(false)
-  const signUp = async () => {
-    try {
-      updateSigningUp(true)
-      await fetch('/api/sign-up', {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-        method: 'POST',
-      })
-    } catch (e) {
-      console.error(e)
-    } finally {
-      updateSigningUp(false)
-    }
-  }
+
   return (
     <>
       <Container>
@@ -105,20 +84,8 @@ const AuthPage: FC<AuthPageProps> = ({ mode, onToggleMode, onSubmit }) => {
         <Row>
           <Col>
             <Button
-              disabled={signingUp}
               onClick={() => {
-                switch (mode) {
-                  case AuthPageMode.Login: {
-                    signin('Credentials', { email, password })
-                    break
-                  }
-                  case AuthPageMode.SignUp: {
-                    signUp()
-                    break
-                  }
-                  default:
-                    break
-                }
+                onSubmit(email, password)
               }}
             >
               {copy[mode].primaryButton}
@@ -132,18 +99,7 @@ const AuthPage: FC<AuthPageProps> = ({ mode, onToggleMode, onSubmit }) => {
           </Col>
         </Row>
       </Container>
-      {signingUp && (
-        <div
-          style={{
-            width: '100vw',
-            height: '100vh',
-            zIndex: 999,
-            opacity: 0.5,
-          }}
-        >
-          <Spinner animation="border" role="status" />
-        </div>
-      )}
+      
     </>
   )
 }

@@ -18,8 +18,8 @@ import {
   ReverseSearchResponseSchema,
   IReverseSearchRequest,
   ISearchRequest,
-} from '../schemas/api'
-import { Immutable, kelvinToFahrenheit, makeEndpoint } from '../lib/utils'
+} from '../src/schemas/api'
+import { Immutable, kelvinToFahrenheit, makeEndpoint } from '../src/lib/utils'
 import { IconContext } from 'react-icons/lib'
 
 interface AutocompleteItemProps {

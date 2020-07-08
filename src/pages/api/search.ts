@@ -8,7 +8,7 @@ import {
   OpenWeatherResponseSchema,
   ISearchResponse,
 } from '../../schemas/api'
-import { makeEndpoint } from '../../utils'
+import { makeEndpoint } from '../../lib/utils'
 
 const makeWeatherEndpoint = (lon: number, lat: number) =>
   makeEndpoint(`https://api.openweathermap.org/data/2.5/onecall`, {
